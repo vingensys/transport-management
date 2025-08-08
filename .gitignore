@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Flask / local stuff
+instance/
+*.sqlite
+*.db
+*.db-journal
+
+# Jupyter/Notebook
+.ipynb_checkpoints/
+
+# Alembic
+# Keep migrations in repo, but exclude alembic generated caches if any
+#migrations/ # (keep this COMMENTED so migrations are tracked)
+
+# IDE
+.vscode/
+.idea/

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-4">
+    <h2 class="mb-4">Admin Dashboard</h2>
+
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="company-tab" data-bs-toggle="tab" data-bs-target="#company" type="button" role="tab">Company</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="agreement-tab" data-bs-toggle="tab" data-bs-target="#agreement" type="button" role="tab">Agreement</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="lorry-tab" data-bs-toggle="tab" data-bs-target="#lorry" type="button" role="tab">Lorry</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="route-tab" data-bs-toggle="tab" data-bs-target="#route" type="button" role="tab">Route Builder</button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content pt-4" id="adminTabsContent">
+        <!-- Company Tab -->
+        <div class="tab-pane fade show active" id="company" role="tabpanel">
+            <!-- Company Form & List -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Add Company</div>
+                <div class="card-body">
+                    <form method="POST" action="/admin/company/add">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="name" placeholder="Company Name" required>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" name="address" placeholder="Address" required>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" class="form-control" name="phone" placeholder="Phone">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="email" class="form-control" name="email" placeholder="Email">
+                            </div>
+                        </div>
+                        <button class="btn btn-success mt-3">Add Company</button>
+                    </form>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">Company List</div>
+                <div class="card-body">
+                    <table class="table table-bordered table-sm">
+                        <thead><tr><th>ID</th><th>Name</th><th>Address</th><th>Phone</th><th>Email</th><th>Action</th></tr></thead>
+                        <tbody>
+                        {% for company in companies %}
+                            <tr>
+                                <td>{{ company.id }}</td>
+                                <td>{{ company.name }}</td>
+                                <td>{{ company.address }}</td>
+                                <td>{{ company.phone }}</td>
+                                <td>{{ company.email }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editCompanyModal{{ company.id }}">Edit</button>
+                                </td>
+                            </tr>
+
+                            <!-- Edit Company Modal -->
+                            <div class="modal fade" id="editCompanyModal{{ company.id }}" tabindex="-1" aria-labelledby="editCompanyModalLabel{{ company.id }}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <form method="POST" action="/admin/company/edit/{{ company.id }}">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="editCompanyModalLabel{{ company.id }}">Edit Company</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <div class="mb-3">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" class="form-control" name="name" value="{{ company.name }}" required>
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="address" class="form-label">Address</label>
+                                        <input type="text" class="form-control" name="address" value="{{ company.address }}" required>
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="phone" class="form-label">Phone</label>
+                                        <input type="text" class="form-control" name="phone" value="{{ company.phone }}">
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" name="email" value="{{ company.email }}">
+                                      </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agreement Tab -->
+        <div class="tab-pane fade" id="agreement" role="tabpanel">
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">Add Agreement</div>
+                <div class="card-body">
+                    <form method="POST" action="/admin/agreement/add">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <select name="company_id" class="form-select" required>
+                                    <option value="">Select Company</option>
+                                    {% for company in companies %}
+                                        <option value="{{ company.id }}">{{ company.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" name="loa_number" class="form-control" placeholder="LOA Number" required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="number" step="0.01" name="total_mt_km" class="form-control" placeholder="Total MT-KM" required>
+                            </div>
+                            <div class="col-md-3">
+                               <input type="number" step="0.000001" name="rate_per_mt_km" class="form-control" placeholder="Rate/MT-KM" required>
+                            </div>
+                        </div>
+                        <button class="btn btn-success mt-3">Add Agreement</button>
+                    </form>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">Agreements</div>
+                <div class="card-body">
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr><th>ID</th><th>Company</th><th>LOA</th><th>MT-KM</th><th>Rate</th><th>Active</th><th>Action</th></tr>
+                        </thead>
+                        <tbody>
+                        {% for ag in agreements %}
+                            <tr>
+                                <td>{{ ag.id }}</td>
+                                <td>{{ ag.company.name }}</td>
+                                <td>{{ ag.loa_number }}</td>
+                                <td>{{ ag.total_mt_km }}</td>
+                                <td>{{ "%.6f"|format(ag.rate_per_mt_km) }}</td>
+                                <td>{% if ag.is_active %}✅{% else %}❌{% endif %}</td>
+                                <td>
+                                    {% if not ag.is_active %}
+                                        <a href="/admin/agreement/set_active/{{ ag.id }}" class="btn btn-sm btn-outline-primary">Make Active</a>
+                                    {% else %}
+                                        <span class="text-muted">Active</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lorry Tab -->
+        <div class="tab-pane fade" id="lorry" role="tabpanel">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">Add Lorry</div>
+                <div class="card-body">
+                    <form method="POST" action="/admin/lorry/add">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="capacity" placeholder="Capacity" required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="carrier_size" placeholder="Carrier Size" required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="number" class="form-control" name="number_of_wheels" placeholder="Number of Wheels" required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="remarks" placeholder="Remarks">
+                            </div>
+                        </div>
+                        <button class="btn btn-success mt-3">Add Lorry</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">Lorry List</div>
+                <div class="card-body">
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Capacity</th>
+                                <th>Carrier Size</th>
+                                <th>No. of Wheels</th>
+                                <th>Remarks</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lorry in lorries %}
+                            <tr>
+                                <td>{{ lorry.id }}</td>
+                                <td>{{ lorry.capacity }}</td>
+                                <td>{{ lorry.carrier_size }}</td>
+                                <td>{{ lorry.number_of_wheels }}</td>
+                                <td>{{ lorry.remarks }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editLorryModal{{ lorry.id }}">Edit</button>
+                                </td>
+                            </tr>
+
+                            <!-- Edit Lorry Modal -->
+                            <div class="modal fade" id="editLorryModal{{ lorry.id }}" tabindex="-1" aria-labelledby="editLorryModalLabel{{ lorry.id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <form method="POST" action="/admin/lorry/edit/{{ lorry.id }}">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="editLorryModalLabel{{ lorry.id }}">Edit Lorry</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="capacity" class="form-label">Capacity</label>
+                                        <input type="text" class="form-control" name="capacity" value="{{ lorry.capacity }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="carrier_size" class="form-label">Carrier Size</label>
+                                        <input type="text" class="form-control" name="carrier_size" value="{{ lorry.carrier_size }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="number_of_wheels" class="form-label">Number of Wheels</label>
+                                        <input type="number" class="form-control" name="number_of_wheels" value="{{ lorry.number_of_wheels }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="remarks" class="form-label">Remarks</label>
+                                        <input type="text" class="form-control" name="remarks" value="{{ lorry.remarks }}">
+                                    </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                            </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Route Builder Tab -->
+        <div class="tab-pane fade" id="route" role="tabpanel">
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">Add Route</div>
+                <div class="card-body">
+                    <form method="POST" action="/admin/route/add">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" name="name" placeholder="Route Name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" name="waypoints" placeholder="Waypoints (comma-separated)">
+                                <small class="text-muted">Enter stops in order. E.g., Chennai, Arakkonam, Salem</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary mt-3">Add Route</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Existing Routes</div>
+                <div class="card-body">
+                    {% for route in routes %}
+                        <div class="mb-3">
+                            <strong>{{ route.name }}</strong><br>
+                            <small class="text-muted">Waypoints:</small>
+                            <ul>
+                                {% for stop in route.stops %}
+                                    <li>{{ stop.location }} ({{ stop.sequence_no }})</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Letter Record Tab (unchanged) -->
+        <div class="tab-pane fade" id="letter" role="tabpanel">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">Create Letter Record</div>
+                <div class="card-body">
+                    <form method="POST" action="/admin/letter/add">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label>Lorry</label>
+                                <select name="lorry_id" class="form-select" required>
+                                    {% for lorry in lorries %}
+                                        <option value="{{ lorry.id }}">{{ lorry.capacity }} - {{ lorry.carrier_size }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Route</label>
+                                <select name="route_id" class="form-select" required>
+                                    {% for route in routes %}
+                                        <option value="{{ route.id }}">{{ route.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Booking Unit</label>
+                                <input type="text" name="booking_unit" class="form-control" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Is ELS/ED?</label>
+                                <select name="is_home_depot" class="form-select">
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-3">
+                            <div class="col-md-3">
+                                <label>Load at ELS/ED?</label>
+                                <select name="load_at_home" class="form-select">
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Far End Action</label>
+                                <input type="text" name="far_end_action" class="form-control" placeholder="Load/Unload">
+                            </div>
+                            <div class="col-md-6">
+                                <label>Purpose / Remarks</label>
+                                <input type="text" name="remarks" class="form-control">
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary mt-4">Create Letter Record</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
