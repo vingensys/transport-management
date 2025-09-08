@@ -1,0 +1,100 @@
+{% import 'admin/macros/ui_macros.html' as ui %}
+
+<!-- Lorry Booking module -->
+<div class="card mb-4">
+  <div class="card-header bg-success text-white">New Lorry Booking</div>
+  <div class="card-body">
+    <form id="bookingForm" method="POST" action="/admin/letter/add">
+      
+      <!-- FROM -->
+      <div class="stop-card">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">From</label>
+            <input class="form-control" name="from_location" placeholder="From Location" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label d-flex justify-content-between">
+                <span>Authority</span>
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addAuthorityModal">+ Add</button>
+            </label>
+            {{ ui.authority_select('from_authority_id', authorities) }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Intermediate stops -->
+      <div id="bookingIntermediateStops"></div>
+      <button type="button" class="btn btn-sm btn-outline-info my-2" id="addBookingStopBtn">+ Add Stop</button>
+
+      <!-- TO -->
+      <div class="stop-card">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">To</label>
+            <input class="form-control" name="to_location" placeholder="To Location" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label d-flex justify-content-between">
+                <span>Authority</span>
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addAuthorityModal">+ Add</button>
+            </label>
+            {{ ui.authority_select('to_authority_id', authorities) }}
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Booking options -->
+      <div class="row g-3 mb-3">
+        <div class="col-md-3">
+          <label class="form-label">Booking for ELS/ED?</label>
+          <select name="is_home_depot" class="form-select">
+            <option value="1" selected>Yes</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Loading at ELS/ED?</label>
+          <select name="load_at_home" class="form-select">
+            <option value="1" selected>Yes</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Lorry</label>
+          <select name="lorry_id" class="form-select" required>
+            <option value="">Select Lorry</option>
+            {% for lorry in lorries %}
+              <option value="{{ lorry.id }}">{{ lorry.lorry_number }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Placement Date</label>
+          <input type="date" name="placement_date" class="form-control">
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Materials List -->
+      <div class="mb-3">
+        <label class="form-label">Materials List</label>
+        <textarea class="form-control" name="materials" rows="3" placeholder="Enter materials list here"></textarea>
+      </div>
+
+      <button class="btn btn-success">Book Lorry</button>
+    </form>
+  </div>
+</div>
+
+<!-- hidden source for authority <option> list used by JS -->
+<select id="authorityOptionsSource" class="d-none">
+  <option value="">Select</option>
+  {% for auth in authorities %}
+    <option value="{{ auth.id }}">{{ auth.location }} - {{ auth.authority }}</option>
+  {% endfor %}
+</select>
+

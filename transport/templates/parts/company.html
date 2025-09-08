@@ -1,0 +1,63 @@
+<!-- Company module -->
+<div class="card mb-4">
+  <div class="card-header bg-primary text-white">Add Company</div>
+  <div class="card-body">
+    <form method="POST" action="/admin/company/add">
+      <div class="row g-3">
+        <div class="col-md-3"><input class="form-control" name="name" placeholder="Company Name" required></div>
+        <div class="col-md-4"><input class="form-control" name="address" placeholder="Address" required></div>
+        <div class="col-md-2"><input class="form-control" name="phone" placeholder="Phone"></div>
+        <div class="col-md-3"><input type="email" class="form-control" name="email" placeholder="Email"></div>
+      </div>
+      <button class="btn btn-success mt-3">Add Company</button>
+    </form>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">Company List</div>
+  <div class="card-body">
+    <table class="table table-bordered table-sm align-middle">
+      <thead><tr><th>ID</th><th>Name</th><th>Address</th><th>Phone</th><th>Email</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for company in companies %}
+        <tr>
+          <td>{{ company.id }}</td>
+          <td>{{ company.name }}</td>
+          <td>{{ company.address }}</td>
+          <td>{{ company.phone }}</td>
+          <td>{{ company.email }}</td>
+          <td class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editCompanyModal{{ company.id }}">Edit</button>
+            <form method="POST" action="/admin/company/delete/{{ company.id }}" onsubmit="return confirm('Delete this company?');">
+              <button class="btn btn-sm btn-outline-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+
+        <!-- Edit Company Modal -->
+        <div class="modal fade" id="editCompanyModal{{ company.id }}" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog"><div class="modal-content">
+            <form method="POST" action="/admin/company/edit/{{ company.id }}">
+              <div class="modal-header">
+                <h5 class="modal-title">Edit Company</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-2"><label class="form-label">Name</label><input class="form-control" name="name" value="{{ company.name }}" required></div>
+                <div class="mb-2"><label class="form-label">Address</label><input class="form-control" name="address" value="{{ company.address }}" required></div>
+                <div class="mb-2"><label class="form-label">Phone</label><input class="form-control" name="phone" value="{{ company.phone }}"></div>
+                <div class="mb-2"><label class="form-label">Email</label><input type="email" class="form-control" name="email" value="{{ company.email }}"></div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary">Save Changes</button>
+              </div>
+            </form>
+          </div></div>
+        </div>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

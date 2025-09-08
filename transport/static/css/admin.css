@@ -1,0 +1,12 @@
+.stop-card {
+    border: 1px dashed #dee2e6;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    background: #fff;
+}
+
+.mini-label {
+    font-size: 0.825rem;
+    color: #6c757d;
+}

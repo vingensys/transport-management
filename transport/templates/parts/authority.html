@@ -1,0 +1,74 @@
+<!-- Authority module -->
+<div class="card mb-4">
+  <div class="card-header bg-info text-white">Add Authority</div>
+  <div class="card-body">
+    <form method="POST" action="/admin/authority/add">
+      <div class="row g-3">
+        <div class="col-md-3"><input class="form-control" name="location" placeholder="Location" required></div>
+        <div class="col-md-3"><input class="form-control" name="authority" placeholder="Authority Name" required></div>
+        <div class="col-md-6"><input class="form-control" name="address" placeholder="Address"></div>
+      </div>
+      <button class="btn btn-success mt-3">Add Authority</button>
+    </form>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">Authorities</div>
+  <div class="card-body">
+    <table class="table table-bordered table-sm align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Location</th>
+          <th>Authority</th>
+          <th>Address</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for auth in authorities %}
+        <tr>
+          <td>{{ auth.id }}</td>
+          <td>{{ auth.location }}</td>
+          <td>{{ auth.authority }}</td>
+          <td>{{ auth.address }}</td>
+          <td class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editAuthorityModal{{ auth.id }}">Edit</button>
+          </td>
+        </tr>
+
+        <!-- Edit Authority Modal -->
+        <div class="modal fade" id="editAuthorityModal{{ auth.id }}" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog"><div class="modal-content">
+            <form method="POST" action="/admin/authority/edit/{{ auth.id }}">
+              <div class="modal-header">
+                <h5 class="modal-title">Edit Authority</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-2">
+                  <label class="form-label">Location</label>
+                  <input class="form-control" name="location" value="{{ auth.location }}" required>
+                </div>
+                <div class="mb-2">
+                  <label class="form-label">Authority</label>
+                  <input class="form-control" name="authority" value="{{ auth.authority }}" required>
+                </div>
+                <div class="mb-2">
+                  <label class="form-label">Address</label>
+                  <input class="form-control" name="address" value="{{ auth.address }}">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary">Save Changes</button>
+              </div>
+            </form>
+          </div></div>
+        </div>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

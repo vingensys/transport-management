@@ -14,7 +14,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'da
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Register Blueprint
-app.register_blueprint(admin_bp, url_prefix='/admin')
+app.register_blueprint(admin_bp)
 
 # Initialize DB with app context
 db.init_app(app)

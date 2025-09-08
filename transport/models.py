@@ -77,6 +77,22 @@ class RouteStop(db.Model):
 # ----------------------------
 # Letter Record Model
 # ----------------------------
+
+LETTER_STATE_LABELS = {
+    'DRAFT': 'Draft',
+    'PROPOSAL': 'Proposal',
+    'APPROVED': 'Approved',
+    'CANCELLED': 'Cancelled',
+}
+
+LETTER_STATE_BADGE = {
+    'DRAFT': 'secondary',
+    'PROPOSAL': 'info',
+    'APPROVED': 'success',
+    'CANCELLED': 'danger',
+}
+
+
 class LetterRecord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     letter_number = db.Column(db.String(100), unique=True, nullable=False)
@@ -117,6 +133,14 @@ class LetterRecord(db.Model):
     __table_args__ = (
         db.UniqueConstraint('agreement_id', 'booking_serial', name='uq_agreement_booking_serial'),
     )
+
+    @property
+    def state_label(self):
+        return LETTER_STATE_LABELS.get(self.state, self.state)
+
+    @property
+    def state_badge(self):
+        return LETTER_STATE_BADGE.get(self.state, 'secondary')
 
 # ----------------------------
 # Material Group (for lump-sum lists with a single total)

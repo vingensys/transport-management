@@ -14,19 +14,20 @@ venv/
 .DS_Store
 Thumbs.db
 
-# Flask / local stuff
-instance/
+# Local DBs
 *.sqlite
 *.db
 *.db-journal
 
-# Jupyter/Notebook
-.ipynb_checkpoints/
+# Flask instance
+instance/
 
-# Alembic
-# Keep migrations in repo, but exclude alembic generated caches if any
-#migrations/ # (keep this COMMENTED so migrations are tracked)
+# Jupyter
+.ipynb_checkpoints/
 
 # IDE
 .vscode/
 .idea/
+
+*.rar
+*.md

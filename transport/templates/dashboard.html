@@ -1,371 +1,855 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    .stop-card{border:1px dashed #dee2e6;border-radius:.5rem;padding:1rem;margin-bottom:.75rem;background:#fff}
+    .mini-label{font-size:.825rem;color:#6c757d}
+  </style>
 </head>
 <body class="bg-light">
 <div class="container py-4">
-    <h2 class="mb-4">Admin Dashboard</h2>
+  <h2 class="mb-4">Admin Dashboard</h2>
 
-    <!-- Tab Navigation -->
-    <ul class="nav nav-tabs" id="adminTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="company-tab" data-bs-toggle="tab" data-bs-target="#company" type="button" role="tab">Company</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="agreement-tab" data-bs-toggle="tab" data-bs-target="#agreement" type="button" role="tab">Agreement</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="lorry-tab" data-bs-toggle="tab" data-bs-target="#lorry" type="button" role="tab">Lorry</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="route-tab" data-bs-toggle="tab" data-bs-target="#route" type="button" role="tab">Route Builder</button>
-        </li>
-    </ul>
+  <!-- Tabs -->
+  <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="company-tab" data-bs-toggle="tab" data-bs-target="#company" type="button" role="tab">Company</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="agreement-tab" data-bs-toggle="tab" data-bs-target="#agreement" type="button" role="tab">Agreement</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="lorry-tab" data-bs-toggle="tab" data-bs-target="#lorry" type="button" role="tab">Lorry</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="authority-tab" data-bs-toggle="tab" data-bs-target="#authority" type="button" role="tab">Authorities</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="route-tab" data-bs-toggle="tab" data-bs-target="#route" type="button" role="tab">Route Builder</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="letter-tab" data-bs-toggle="tab" data-bs-target="#letter" type="button" role="tab">Letter</button>
+    </li>
+  </ul>
 
-    <!-- Tab Content -->
-    <div class="tab-content pt-4" id="adminTabsContent">
-        <!-- Company Tab -->
-        <div class="tab-pane fade show active" id="company" role="tabpanel">
-            <!-- Company Form & List -->
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">Add Company</div>
-                <div class="card-body">
-                    <form method="POST" action="/admin/company/add">
-                        <div class="row g-3">
-                            <div class="col-md-3">
-                                <input type="text" class="form-control" name="name" placeholder="Company Name" required>
-                            </div>
-                            <div class="col-md-4">
-                                <input type="text" class="form-control" name="address" placeholder="Address" required>
-                            </div>
-                            <div class="col-md-2">
-                                <input type="text" class="form-control" name="phone" placeholder="Phone">
-                            </div>
-                            <div class="col-md-3">
-                                <input type="email" class="form-control" name="email" placeholder="Email">
-                            </div>
-                        </div>
-                        <button class="btn btn-success mt-3">Add Company</button>
-                    </form>
-                </div>
+  <div class="tab-content pt-4" id="adminTabsContent">
+    <!-- Company -->
+    <div class="tab-pane fade show active" id="company" role="tabpanel">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">Add Company</div>
+        <div class="card-body">
+          <form method="POST" action="/admin/company/add">
+            <div class="row g-3">
+              <div class="col-md-3"><input class="form-control" name="name" placeholder="Company Name" required></div>
+              <div class="col-md-4"><input class="form-control" name="address" placeholder="Address" required></div>
+              <div class="col-md-2"><input class="form-control" name="phone" placeholder="Phone"></div>
+              <div class="col-md-3"><input type="email" class="form-control" name="email" placeholder="Email"></div>
             </div>
-            <div class="card mb-4">
-                <div class="card-header">Company List</div>
-                <div class="card-body">
-                    <table class="table table-bordered table-sm">
-                        <thead><tr><th>ID</th><th>Name</th><th>Address</th><th>Phone</th><th>Email</th><th>Action</th></tr></thead>
-                        <tbody>
-                        {% for company in companies %}
-                            <tr>
-                                <td>{{ company.id }}</td>
-                                <td>{{ company.name }}</td>
-                                <td>{{ company.address }}</td>
-                                <td>{{ company.phone }}</td>
-                                <td>{{ company.email }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editCompanyModal{{ company.id }}">Edit</button>
-                                </td>
-                            </tr>
-
-                            <!-- Edit Company Modal -->
-                            <div class="modal fade" id="editCompanyModal{{ company.id }}" tabindex="-1" aria-labelledby="editCompanyModalLabel{{ company.id }}" aria-hidden="true">
-                              <div class="modal-dialog">
-                                <div class="modal-content">
-                                  <form method="POST" action="/admin/company/edit/{{ company.id }}">
-                                    <div class="modal-header">
-                                      <h5 class="modal-title" id="editCompanyModalLabel{{ company.id }}">Edit Company</h5>
-                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                      <div class="mb-3">
-                                        <label for="name" class="form-label">Name</label>
-                                        <input type="text" class="form-control" name="name" value="{{ company.name }}" required>
-                                      </div>
-                                      <div class="mb-3">
-                                        <label for="address" class="form-label">Address</label>
-                                        <input type="text" class="form-control" name="address" value="{{ company.address }}" required>
-                                      </div>
-                                      <div class="mb-3">
-                                        <label for="phone" class="form-label">Phone</label>
-                                        <input type="text" class="form-control" name="phone" value="{{ company.phone }}">
-                                      </div>
-                                      <div class="mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" name="email" value="{{ company.email }}">
-                                      </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                      <button type="submit" class="btn btn-primary">Save Changes</button>
-                                    </div>
-                                  </form>
-                                </div>
-                              </div>
-                            </div>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <button class="btn btn-success mt-3">Add Company</button>
+          </form>
         </div>
+      </div>
 
-        <!-- Agreement Tab -->
-        <div class="tab-pane fade" id="agreement" role="tabpanel">
-            <div class="card mb-4">
-                <div class="card-header bg-secondary text-white">Add Agreement</div>
-                <div class="card-body">
-                    <form method="POST" action="/admin/agreement/add">
-                        <div class="row g-3">
-                            <div class="col-md-3">
-                                <select name="company_id" class="form-select" required>
-                                    <option value="">Select Company</option>
-                                    {% for company in companies %}
-                                        <option value="{{ company.id }}">{{ company.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="text" name="loa_number" class="form-control" placeholder="LOA Number" required>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="number" step="0.01" name="total_mt_km" class="form-control" placeholder="Total MT-KM" required>
-                            </div>
-                            <div class="col-md-3">
-                               <input type="number" step="0.000001" name="rate_per_mt_km" class="form-control" placeholder="Rate/MT-KM" required>
-                            </div>
-                        </div>
-                        <button class="btn btn-success mt-3">Add Agreement</button>
-                    </form>
-                </div>
-            </div>
-            <div class="card mb-4">
-                <div class="card-header">Agreements</div>
-                <div class="card-body">
-                    <table class="table table-bordered table-sm">
-                        <thead>
-                            <tr><th>ID</th><th>Company</th><th>LOA</th><th>MT-KM</th><th>Rate</th><th>Active</th><th>Action</th></tr>
-                        </thead>
-                        <tbody>
-                        {% for ag in agreements %}
-                            <tr>
-                                <td>{{ ag.id }}</td>
-                                <td>{{ ag.company.name }}</td>
-                                <td>{{ ag.loa_number }}</td>
-                                <td>{{ ag.total_mt_km }}</td>
-                                <td>{{ "%.6f"|format(ag.rate_per_mt_km) }}</td>
-                                <td>{% if ag.is_active %}✅{% else %}❌{% endif %}</td>
-                                <td>
-                                    {% if not ag.is_active %}
-                                        <a href="/admin/agreement/set_active/{{ ag.id }}" class="btn btn-sm btn-outline-primary">Make Active</a>
-                                    {% else %}
-                                        <span class="text-muted">Active</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+      <div class="card mb-4">
+        <div class="card-header">Company List</div>
+        <div class="card-body">
+          <table class="table table-bordered table-sm align-middle">
+            <thead><tr><th>ID</th><th>Name</th><th>Address</th><th>Phone</th><th>Email</th><th>Actions</th></tr></thead>
+            <tbody>
+            {% for company in companies %}
+              <tr>
+                <td>{{ company.id }}</td>
+                <td>{{ company.name }}</td>
+                <td>{{ company.address }}</td>
+                <td>{{ company.phone }}</td>
+                <td>{{ company.email }}</td>
+                <td class="d-flex gap-2">
+                  <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editCompanyModal{{ company.id }}">Edit</button>
+                  <form method="POST" action="/admin/company/delete/{{ company.id }}" onsubmit="return confirm('Delete this company?');">
+                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                  </form>
+                </td>
+              </tr>
+
+              <!-- Edit Company Modal -->
+              <div class="modal fade" id="editCompanyModal{{ company.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog"><div class="modal-content">
+                  <form method="POST" action="/admin/company/edit/{{ company.id }}">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Edit Company</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-2"><label class="form-label">Name</label><input class="form-control" name="name" value="{{ company.name }}" required></div>
+                      <div class="mb-2"><label class="form-label">Address</label><input class="form-control" name="address" value="{{ company.address }}" required></div>
+                      <div class="mb-2"><label class="form-label">Phone</label><input class="form-control" name="phone" value="{{ company.phone }}"></div>
+                      <div class="mb-2"><label class="form-label">Email</label><input type="email" class="form-control" name="email" value="{{ company.email }}"></div>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                      <button class="btn btn-primary">Save Changes</button>
+                    </div>
+                  </form>
+                </div></div>
+              </div>
+            {% endfor %}
+            </tbody>
+          </table>
         </div>
-
-        <!-- Lorry Tab -->
-        <div class="tab-pane fade" id="lorry" role="tabpanel">
-            <div class="card mb-4">
-                <div class="card-header bg-info text-white">Add Lorry</div>
-                <div class="card-body">
-                    <form method="POST" action="/admin/lorry/add">
-                        <div class="row g-3">
-                            <div class="col-md-3">
-                                <input type="text" class="form-control" name="capacity" placeholder="Capacity" required>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control" name="carrier_size" placeholder="Carrier Size" required>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="number" class="form-control" name="number_of_wheels" placeholder="Number of Wheels" required>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control" name="remarks" placeholder="Remarks">
-                            </div>
-                        </div>
-                        <button class="btn btn-success mt-3">Add Lorry</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header">Lorry List</div>
-                <div class="card-body">
-                    <table class="table table-bordered table-sm">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Capacity</th>
-                                <th>Carrier Size</th>
-                                <th>No. of Wheels</th>
-                                <th>Remarks</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for lorry in lorries %}
-                            <tr>
-                                <td>{{ lorry.id }}</td>
-                                <td>{{ lorry.capacity }}</td>
-                                <td>{{ lorry.carrier_size }}</td>
-                                <td>{{ lorry.number_of_wheels }}</td>
-                                <td>{{ lorry.remarks }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editLorryModal{{ lorry.id }}">Edit</button>
-                                </td>
-                            </tr>
-
-                            <!-- Edit Lorry Modal -->
-                            <div class="modal fade" id="editLorryModal{{ lorry.id }}" tabindex="-1" aria-labelledby="editLorryModalLabel{{ lorry.id }}" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                <form method="POST" action="/admin/lorry/edit/{{ lorry.id }}">
-                                    <div class="modal-header">
-                                    <h5 class="modal-title" id="editLorryModalLabel{{ lorry.id }}">Edit Lorry</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label for="capacity" class="form-label">Capacity</label>
-                                        <input type="text" class="form-control" name="capacity" value="{{ lorry.capacity }}" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="carrier_size" class="form-label">Carrier Size</label>
-                                        <input type="text" class="form-control" name="carrier_size" value="{{ lorry.carrier_size }}" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="number_of_wheels" class="form-label">Number of Wheels</label>
-                                        <input type="number" class="form-control" name="number_of_wheels" value="{{ lorry.number_of_wheels }}" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="remarks" class="form-label">Remarks</label>
-                                        <input type="text" class="form-control" name="remarks" value="{{ lorry.remarks }}">
-                                    </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                    </div>
-                                </form>
-                                </div>
-                            </div>
-                            </div>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Route Builder Tab -->
-        <div class="tab-pane fade" id="route" role="tabpanel">
-            <div class="card mb-4">
-                <div class="card-header bg-warning text-dark">Add Route</div>
-                <div class="card-body">
-                    <form method="POST" action="/admin/route/add">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" name="name" placeholder="Route Name" required>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" name="waypoints" placeholder="Waypoints (comma-separated)">
-                                <small class="text-muted">Enter stops in order. E.g., Chennai, Arakkonam, Salem</small>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary mt-3">Add Route</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">Existing Routes</div>
-                <div class="card-body">
-                    {% for route in routes %}
-                        <div class="mb-3">
-                            <strong>{{ route.name }}</strong><br>
-                            <small class="text-muted">Waypoints:</small>
-                            <ul>
-                                {% for stop in route.stops %}
-                                    <li>{{ stop.location }} ({{ stop.sequence_no }})</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-
-        <!-- Letter Record Tab (unchanged) -->
-        <div class="tab-pane fade" id="letter" role="tabpanel">
-            <div class="card mb-4">
-                <div class="card-header bg-success text-white">Create Letter Record</div>
-                <div class="card-body">
-                    <form method="POST" action="/admin/letter/add">
-                        <div class="row g-3">
-                            <div class="col-md-3">
-                                <label>Lorry</label>
-                                <select name="lorry_id" class="form-select" required>
-                                    {% for lorry in lorries %}
-                                        <option value="{{ lorry.id }}">{{ lorry.capacity }} - {{ lorry.carrier_size }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label>Route</label>
-                                <select name="route_id" class="form-select" required>
-                                    {% for route in routes %}
-                                        <option value="{{ route.id }}">{{ route.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label>Booking Unit</label>
-                                <input type="text" name="booking_unit" class="form-control" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label>Is ELS/ED?</label>
-                                <select name="is_home_depot" class="form-select">
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="row g-3 mt-3">
-                            <div class="col-md-3">
-                                <label>Load at ELS/ED?</label>
-                                <select name="load_at_home" class="form-select">
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label>Far End Action</label>
-                                <input type="text" name="far_end_action" class="form-control" placeholder="Load/Unload">
-                            </div>
-                            <div class="col-md-6">
-                                <label>Purpose / Remarks</label>
-                                <input type="text" name="remarks" class="form-control">
-                            </div>
-                        </div>
-
-                        <button class="btn btn-primary mt-4">Create Letter Record</button>
-                    </form>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-</div>
+    <!-- Agreement -->
+    <div class="tab-pane fade" id="agreement" role="tabpanel">
+      <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">Add Agreement</div>
+        <div class="card-body">
+          <form method="POST" action="/admin/agreement/add">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <select name="company_id" class="form-select" required>
+                  <option value="">Select Company</option>
+                  {% for company in companies %}
+                    <option value="{{ company.id }}">{{ company.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-3"><input class="form-control" name="loa_number" placeholder="LOA Number" required></div>
+              <div class="col-md-3"><input type="number" step="0.01" class="form-control" name="total_mt_km" placeholder="Total MT-KM" required></div>
+              <div class="col-md-3"><input type="number" step="0.000001" class="form-control" name="rate_per_mt_km" placeholder="Rate/MT-KM" required></div>
+            </div>
+            <button class="btn btn-success mt-3">Add Agreement</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header">Agreements</div>
+        <div class="card-body">
+          <table class="table table-bordered table-sm align-middle">
+            <thead><tr><th>ID</th><th>Company</th><th>LOA</th><th>MT-KM</th><th>Rate</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+            {% for ag in agreements %}
+              <tr>
+                <td>{{ ag.id }}</td>
+                <td>{{ ag.company.name }}</td>
+                <td>{{ ag.loa_number }}</td>
+                <td>{{ ag.total_mt_km }}</td>
+                <td>{{ "%.6f"|format(ag.rate_per_mt_km) }}</td>
+                <td>{% if ag.is_active %}✅{% else %}❌{% endif %}</td>
+                <td class="d-flex gap-2">
+                  <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editAgreement{{ ag.id }}">Edit</button>
+                  {% if not ag.is_active %}
+                    <form method="POST" action="/admin/agreement/set_active/{{ ag.id }}">
+                      <button class="btn btn-sm btn-outline-secondary">Make Active</button>
+                    </form>
+                  {% else %}
+                    <span class="text-muted">Active</span>
+                  {% endif %}
+                </td>
+              </tr>
+
+              <!-- Edit Agreement Modal -->
+              <div class="modal fade" id="editAgreement{{ ag.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog"><div class="modal-content">
+                  <form method="POST" action="/admin/agreement/edit/{{ ag.id }}">
+                    <div class="modal-header"><h5 class="modal-title">Edit Agreement</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-2">
+                        <label class="form-label">Company</label>
+                        <select name="company_id" class="form-select">
+                          {% for company in companies %}
+                            <option value="{{ company.id }}" {% if company.id==ag.company_id %}selected{% endif %}>{{ company.name }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                      <div class="mb-2"><label class="form-label">LOA Number</label><input class="form-control" name="loa_number" value="{{ ag.loa_number }}"></div>
+                      <div class="mb-2"><label class="form-label">Total MT‑KM</label><input type="number" step="0.01" class="form-control" name="total_mt_km" value="{{ ag.total_mt_km }}"></div>
+                      <div class="mb-2"><label class="form-label">Rate / MT‑KM</label><input type="number" step="0.000001" class="form-control" name="rate_per_mt_km" value="{{ ag.rate_per_mt_km }}"></div>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                      <button class="btn btn-primary">Save</button>
+                    </div>
+                  </form>
+                </div></div>
+              </div>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Lorry -->
+    <div class="tab-pane fade" id="lorry" role="tabpanel">
+      <div class="card mb-4">
+        <div class="card-header bg-info text-white">Add Lorry</div>
+        <div class="card-body">
+          <form method="POST" action="/admin/lorry/add">
+            <div class="row g-3">
+              <div class="col-md-3"><input class="form-control" name="capacity" placeholder="Capacity" required></div>
+              <div class="col-md-3"><input class="form-control" name="carrier_size" placeholder="Carrier Size" required></div>
+              <div class="col-md-3"><input type="number" class="form-control" name="number_of_wheels" placeholder="Number of Wheels" required></div>
+              <div class="col-md-3"><input class="form-control" name="remarks" placeholder="Remarks"></div>
+            </div>
+            <button class="btn btn-success mt-3">Add Lorry</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header">Lorry List</div>
+        <div class="card-body">
+          <table class="table table-bordered table-sm align-middle">
+            <thead><tr><th>ID</th><th>Capacity</th><th>Carrier Size</th><th>No. of Wheels</th><th>Remarks</th><th>Action</th></tr></thead>
+            <tbody>
+            {% for lorry in lorries %}
+              <tr>
+                <td>{{ lorry.id }}</td>
+                <td>{{ lorry.capacity }}</td>
+                <td>{{ lorry.carrier_size }}</td>
+                <td>{{ lorry.number_of_wheels }}</td>
+                <td>{{ lorry.remarks }}</td>
+                <td><button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editLorryModal{{ lorry.id }}">Edit</button></td>
+              </tr>
+
+              <!-- Edit Lorry Modal -->
+              <div class="modal fade" id="editLorryModal{{ lorry.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog"><div class="modal-content">
+                  <form method="POST" action="/admin/lorry/edit/{{ lorry.id }}">
+                    <div class="modal-header"><h5 class="modal-title">Edit Lorry</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-2"><label class="form-label">Capacity</label><input class="form-control" name="capacity" value="{{ lorry.capacity }}" required></div>
+                      <div class="mb-2"><label class="form-label">Carrier Size</label><input class="form-control" name="carrier_size" value="{{ lorry.carrier_size }}" required></div>
+                      <div class="mb-2"><label class="form-label">Number of Wheels</label><input type="number" class="form-control" name="number_of_wheels" value="{{ lorry.number_of_wheels }}" required></div>
+                      <div class="mb-2"><label class="form-label">Remarks</label><input class="form-control" name="remarks" value="{{ lorry.remarks }}"></div>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                      <button class="btn btn-primary">Save</button>
+                    </div>
+                  </form>
+                </div></div>
+              </div>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Authorities -->
+    <div class="tab-pane fade" id="authority" role="tabpanel">
+      <div class="card mb-4">
+        <div class="card-header bg-dark text-white">Add Location Authority</div>
+        <div class="card-body">
+          <form method="POST" action="/admin/authority/add">
+            <div class="row g-3">
+              <div class="col-md-3"><input class="form-control" name="location" placeholder="Location" required></div>
+              <div class="col-md-3"><input class="form-control" name="authority" placeholder="Authority name" required></div>
+              <div class="col-md-6"><input class="form-control" name="address" placeholder="Address (optional)"></div>
+            </div>
+            <button class="btn btn-success mt-3">Add Authority</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Authorities</div>
+        <div class="card-body">
+          <table class="table table-bordered table-sm align-middle">
+            <thead><tr><th>ID</th><th>Location</th><th>Authority</th><th>Address</th><th>Action</th></tr></thead>
+            <tbody>
+              {% for a in authorities %}
+              <tr>
+                <td>{{ a.id }}</td>
+                <td>{{ a.location }}</td>
+                <td>{{ a.authority }}</td>
+                <td>{{ a.address or '' }}</td>
+                <td><button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editAuthority{{ a.id }}">Edit</button></td>
+              </tr>
+
+              <!-- Edit Authority Modal -->
+              <div class="modal fade" id="editAuthority{{ a.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog"><div class="modal-content">
+                  <form method="POST" action="/admin/authority/edit/{{ a.id }}">
+                    <div class="modal-header"><h5 class="modal-title">Edit Authority</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-2"><label class="form-label">Location</label><input class="form-control" name="location" value="{{ a.location }}"></div>
+                      <div class="mb-2"><label class="form-label">Authority</label><input class="form-control" name="authority" value="{{ a.authority }}"></div>
+                      <div class="mb-2"><label class="form-label">Address</label><input class="form-control" name="address" value="{{ a.address }}"></div>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                      <button class="btn btn-primary">Save</button>
+                    </div>
+                  </form>
+                </div></div>
+              </div>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Route Builder -->
+    <div class="tab-pane fade" id="route" role="tabpanel">
+      <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">Add Route</div>
+        <div class="card-body">
+          <form id="routeBuilderForm">
+            <div class="row g-3 align-items-end mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Route Name</label>
+                <input class="form-control" name="route_name" placeholder="e.g., Chennai → Salem" required>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Total KM</label>
+                <input type="number" class="form-control" name="total_km" placeholder="e.g., 345">
+              </div>
+            </div>
+
+            <!-- FROM -->
+            <div class="stop-card">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">From: Location</label>
+                  <input class="form-control" name="from_location" placeholder="Start location" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Authority (name)</label>
+                  <select class="form-select authority-select" name="from_authority_id">
+                    <option value="">-- Select --</option>
+                    {% for a in authorities %}
+                      <option value="{{ a.id }}">{{ a.authority }} ({{ a.location }})</option>
+                    {% endfor %}
+                  </select>
+                  <div class="mini-label">Address auto-fills</div>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Authority Address</label>
+                  <input class="form-control authority-address" name="from_authority_address" placeholder="(read-only)" readonly>
+                </div>
+              </div>
+            </div>
+
+            <!-- INTERMEDIATE STOPS -->
+            <div id="stopsContainer"></div>
+            <button class="btn btn-outline-primary mb-3" type="button" id="addStopBtn">+ Add stop</button>
+
+            <hr>
+
+            <!-- TO -->
+            <div class="stop-card">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">To: Location</label>
+                  <input class="form-control" name="to_location" placeholder="Destination" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Authority (name)</label>
+                  <select class="form-select authority-select" name="to_authority_id">
+                    <option value="">-- Select --</option>
+                    {% for a in authorities %}
+                      <option value="{{ a.id }}">{{ a.authority }} ({{ a.location }})</option>
+                    {% endfor %}
+                  </select>
+                  <div class="mini-label">Address auto-fills</div>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Authority Address</label>
+                  <input class="form-control authority-address" name="to_authority_address" placeholder="(read-only)" readonly>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-primary mt-3" type="submit">Create Route</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Existing Routes</div>
+        <div class="card-body">
+          {% for route in routes %}
+          <div class="mb-3">
+            <div class="d-flex align-items-center justify-content-between">
+              <strong>{{ route.name }}</strong>
+              <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editRoute{{ route.id }}">Edit Route</button>
+            </div>
+            <div class="text-muted">Total KM: {{ route.total_km or '—' }}</div>
+            <ul class="mb-0 mt-2">
+              {% for stop in route.stops %}
+              <li>
+                <span class="badge bg-light text-dark">{{ stop.order }}</span>
+                <strong>{{ stop.type|capitalize }}</strong>:
+                {{ stop.location }}
+                {% if stop.authority %} — <em>{{ stop.authority.authority }}</em>{% endif %}
+                <button class="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#editStop{{ stop.id }}">Edit</button>
+              </li>
+
+              <!-- Edit Stop Modal -->
+              <div class="modal fade" id="editStop{{ stop.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog"><div class="modal-content">
+                  <form method="POST" action="/admin/route/stop/edit/{{ stop.id }}">
+                    <div class="modal-header"><h5 class="modal-title">Edit Stop</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-2"><label class="form-label">Location</label><input class="form-control" name="location" value="{{ stop.location }}"></div>
+                      <div class="mb-2">
+                        <label class="form-label">Type</label>
+                        <select name="type" class="form-select">
+                          <option value="from" {% if stop.type=='from' %}selected{% endif %}>From</option>
+                          <option value="intermediate" {% if stop.type=='intermediate' %}selected{% endif %}>Intermediate</option>
+                          <option value="to" {% if stop.type=='to' %}selected{% endif %}>To</option>
+                        </select>
+                      </div>
+                      <div class="mb-2"><label class="form-label">Order</label><input type="number" class="form-control" name="order" value="{{ stop.order }}"></div>
+                      <div class="mb-2">
+                        <label class="form-label">Authority</label>
+                        <select name="authority_id" class="form-select">
+                          <option value="">-- None --</option>
+                          {% for a in authorities %}
+                            <option value="{{ a.id }}" {% if stop.authority_id==a.id %}selected{% endif %}>{{ a.authority }} ({{ a.location }})</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                      <button class="btn btn-primary">Save</button>
+                    </div>
+                  </form>
+                </div></div>
+              </div>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <!-- Edit Route Modal -->
+          <div class="modal fade" id="editRoute{{ route.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog"><div class="modal-content">
+              <form method="POST" action="/admin/route/edit/{{ route.id }}">
+                <div class="modal-header"><h5 class="modal-title">Edit Route</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-2"><label class="form-label">Name</label><input class="form-control" name="name" value="{{ route.name }}"></div>
+                  <div class="mb-2"><label class="form-label">Total KM</label><input type="number" class="form-control" name="total_km" value="{{ route.total_km or '' }}"></div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                  <button class="btn btn-primary">Save</button>
+                </div>
+              </form>
+            </div></div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <!-- Lorry Booking -->
+    <div class="tab-pane fade" id="letter" role="tabpanel">
+      <div class="card mb-4">
+        <div class="card-header bg-success text-white">Lorry Booking</div>
+        <div class="card-body">
+          <form id="bookingForm">
+            <!-- FROM -->
+            <div class="stop-card">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">From</label>
+                  <input class="form-control" name="from_location" placeholder="Origin" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label d-flex align-items-center justify-content-between">
+                    <span>Authority</span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addAuthorityModal">+ Add</button>
+                  </label>
+                  <select class="form-select authority-select" name="from_authority_id">
+                    <option value="">-- Select --</option>
+                    {% for a in authorities %}
+                      <option value="{{ a.id }}">{{ a.authority }} ({{ a.location }})</option>
+                    {% endfor %}
+                  </select>
+                  <div class="mini-label">Address auto-fills</div>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Authority Address</label>
+                  <input class="form-control authority-address" name="from_authority_address" placeholder="(read-only)" readonly>
+                </div>
+              </div>
+            </div>
+
+            <!-- INTERMEDIATE STOPS -->
+            <div id="bkStopsContainer"></div>
+            <button class="btn btn-outline-primary mb-3" type="button" id="bkAddStopBtn">+ Add Stop</button>
+
+            <hr>
+
+            <!-- TO -->
+            <div class="stop-card">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">To</label>
+                  <input class="form-control" name="to_location" placeholder="Destination" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label d-flex align-items-center justify-content-between">
+                    <span>Authority</span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addAuthorityModal">+ Add</button>
+                  </label>
+                  <select class="form-select authority-select" name="to_authority_id">
+                    <option value="">-- Select --</option>
+                    {% for a in authorities %}
+                      <option value="{{ a.id }}">{{ a.authority }} ({{ a.location }})</option>
+                    {% endfor %}
+                  </select>
+                  <div class="mini-label">Address auto-fills</div>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Authority Address</label>
+                  <input class="form-control authority-address" name="to_authority_address" placeholder="(read-only)" readonly>
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+            <!-- Booking details -->
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label class="form-label">Booking for ELS/ED?</label>
+                <select class="form-select" name="is_home_depot">
+                  <option value="1" selected>Yes</option>
+                  <option value="0">No</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Loading at ELS/ED?</label>
+                <select class="form-select" name="load_at_home">
+                  <option value="1" selected>Yes</option>
+                  <option value="0">No</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Lorry</label>
+                <select class="form-select" name="lorry_id" required>
+                  {% for l in lorries %}
+                    <option value="{{ l.id }}">{{ l.capacity }} - {{ l.carrier_size }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Placement Date</label>
+                <input type="date" class="form-control" name="placement_date">
+              </div>
+            </div>
+
+            <div class="row g-3 mt-3">
+              <div class="col-md-4">
+                <label class="form-label">Far End Action</label>
+                <input class="form-control" name="far_end_action" placeholder="Load/Unload">
+              </div>
+              <div class="col-md-8">
+                <label class="form-label">Purpose / Remarks</label>
+                <input class="form-control" name="remarks" placeholder="">
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <button class="btn btn-primary" type="submit">Create Booking</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Add Authority Modal -->
+      <div class="modal fade" id="addAuthorityModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog"><div class="modal-content">
+          <form id="addAuthorityForm">
+            <div class="modal-header">
+              <h5 class="modal-title">Add Authority</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-2"><label class="form-label">Location</label><input class="form-control" name="location" required></div>
+              <div class="mb-2"><label class="form-label">Authority</label><input class="form-control" name="authority" required></div>
+              <div class="mb-2"><label class="form-label">Address</label><input class="form-control" name="address"></div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+              <button class="btn btn-primary" type="submit">Add</button>
+            </div>
+          </form>
+        </div></div>
+      </div>
+    </div>
+  </div> <!-- /.tab-content -->
+</div>   <!-- /.container -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Keep active tab on reload / redirect with hash or localStorage
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.location.hash) {
+      const trigger = document.querySelector(`#adminTabs button[data-bs-target="${window.location.hash}"]`);
+      if (trigger) new bootstrap.Tab(trigger).show();
+    }
+    document.querySelectorAll('#adminTabs button[data-bs-toggle="tab"]').forEach(btn => {
+      btn.addEventListener('shown.bs.tab', (e) => {
+        localStorage.setItem('activeTab', e.target.getAttribute('data-bs-target'));
+      });
+    });
+    const saved = localStorage.getItem('activeTab');
+    if (!window.location.hash && saved) {
+      const trigger = document.querySelector(`#adminTabs button[data-bs-target="${saved}"]`);
+      if (trigger) new bootstrap.Tab(trigger).show();
+    }
+  });
+
+  // Route Builder helpers
+  const authorities = {{ authorities_js | tojson | safe }};
+  let stopCount = 0;
+
+  function authorityAddressFor(selectEl) {
+    const id = parseInt(selectEl.value || '0', 10);
+    const found = authorities.find(a => a.id === id);
+    const addrInput = selectEl.closest('.row').querySelector('.authority-address');
+    if (addrInput) addrInput.value = found && found.address ? found.address : '';
+  }
+
+  document.addEventListener('change', (e) => {
+    if (e.target.matches('select[name$="authority_id"]')) authorityAddressFor(e.target);
+  });
+
+  document.getElementById('addStopBtn').addEventListener('click', () => {
+    stopCount++;
+    const wrap = document.createElement('div');
+    wrap.className = 'stop-card';
+    wrap.innerHTML = `
+      <div class="row g-3 align-items-end">
+        <div class="col-md-5">
+          <label class="form-label">Stop #${stopCount}: Location</label>
+          <input class="form-control" name="stop_location_${stopCount}" placeholder="Intermediate stop">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Authority (name)</label>
+          <select class="form-select" name="stop_authority_id_${stopCount}">
+            <option value="">-- Select --</option>
+            ${authorities.map(a => `<option value="${a.id}">${a.authority} (${a.location})</option>`).join('')}
+          </select>
+          <div class="mini-label">Address auto-fills</div>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Authority Address</label>
+          <input class="form-control authority-address" name="stop_authority_address_${stopCount}" placeholder="(read-only)" readonly>
+        </div>
+        <div class="col-md-1">
+          <button type="button" class="btn btn-outline-danger" title="Remove" onclick="this.closest('.stop-card').remove()">✕</button>
+        </div>
+      </div>`;
+    document.getElementById('stopsContainer').appendChild(wrap);
+  });
+
+  // Submit Route Builder: create route then add stops
+  document.getElementById('routeBuilderForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+
+    // 1) Create route (name + total_km)
+    const f1 = new FormData();
+    f1.append('name', fd.get('route_name'));
+    if (fd.get('total_km')) f1.append('total_km', fd.get('total_km'));
+    const createRes = await fetch('/admin/route/add', { method: 'POST', body: f1 });
+    if (!createRes.ok) { alert('Failed to create route'); return; }
+
+    // 2) Fetch routes and find the created one by name
+    const listRes = await fetch('/admin/api/routes');
+    const routes = await listRes.json();
+    const created = routes.find(r => r.name === fd.get('route_name'));
+    if (!created) { alert('Could not find created route'); return; }
+
+    // 3) Build stops
+    const stops = [];
+    const fromLoc = fd.get('from_location');
+    const fromAuth = fd.get('from_authority_id');
+    if (fromLoc) stops.push({location: fromLoc, type: 'from', authority_id: fromAuth});
+
+    document.querySelectorAll('#stopsContainer .stop-card').forEach((card) => {
+      const loc = card.querySelector('input[name^="stop_location_"]').value;
+      const authSel = card.querySelector('select[name^="stop_authority_id_"]');
+      const auth = authSel ? authSel.value : '';
+      if (loc) stops.push({location: loc, type: 'intermediate', authority_id: auth});
+    });
+
+    const toLoc = fd.get('to_location');
+    const toAuth = fd.get('to_authority_id');
+    if (toLoc) stops.push({location: toLoc, type: 'to', authority_id: toAuth});
+
+    // 4) POST each stop
+    for (let i = 0; i < stops.length; i++) {
+      const s = stops[i];
+      const f = new FormData();
+      f.append('location', s.location);
+      f.append('type', s.type);
+      f.append('order', String(i + 1));
+      if (s.authority_id) f.append('authority_id', s.authority_id);
+      const resp = await fetch(`/admin/route/${created.id}/stop/add`, { method: 'POST', body: f });
+      if (!resp.ok) { alert('Failed to add a stop'); return; }
+    }
+// Use the same authorities_js list we added earlier
+      const bkAuthorities = {{ authorities_js | tojson | safe }};
+      let bkStopCount = 0;
+
+      function bkUpdateAuthorityAddress(selectEl) {
+        const id = parseInt(selectEl.value || '0', 10);
+        const found = bkAuthorities.find(a => a.id === id);
+        const addrInput = selectEl.closest('.row').querySelector('.authority-address');
+        if (addrInput) addrInput.value = found && found.address ? found.address : '';
+      }
+
+      document.addEventListener('change', (e) => {
+        if (e.target.matches('#letter select[name$="authority_id"]')) {
+          bkUpdateAuthorityAddress(e.target);
+        }
+      });
+
+      document.getElementById('bkAddStopBtn').addEventListener('click', () => {
+        bkStopCount++;
+        const wrap = document.createElement('div');
+        wrap.className = 'stop-card';
+        wrap.innerHTML = `
+          <div class="row g-3 align-items-end">
+            <div class="col-md-5">
+              <label class="form-label">Stop #${bkStopCount}: Location</label>
+              <input class="form-control" name="stop_location_${bkStopCount}" placeholder="Intermediate stop">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Authority</label>
+              <select class="form-select" name="stop_authority_id_${bkStopCount}">
+                <option value="">-- Select --</option>
+                ${bkAuthorities.map(a => `<option value="${a.id}">${a.authority} (${a.location})</option>`).join('')}
+              </select>
+              <div class="mini-label">Address auto-fills</div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Authority Address</label>
+              <input class="form-control authority-address" name="stop_authority_address_${bkStopCount}" placeholder="(read-only)" readonly>
+            </div>
+            <div class="col-md-1">
+              <button type="button" class="btn btn-outline-danger" title="Remove" onclick="this.closest('.stop-card').remove()">✕</button>
+            </div>
+          </div>`;
+        document.getElementById('bkStopsContainer').appendChild(wrap);
+      });
+
+      // Inline Add Authority (POST /admin/authority/add), then refresh selects
+      document.getElementById('addAuthorityForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const resp = await fetch('/admin/authority/add', { method: 'POST', body: fd });
+        if (resp.ok) {
+          // refresh page to reload authorities lists & keep on #letter
+          window.location.hash = '#letter';
+          window.location.reload();
+        } else {
+          alert('Failed to add authority');
+        }
+      });
+
+      // Booking flow:
+      // 1) Create route (/admin/route/add)
+      // 2) Add stops (/admin/route/<id>/stop/add)
+      // 3) Create letter (/admin/letter/add)
+      document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+
+        const fromLoc = fd.get('from_location');
+        const toLoc = fd.get('to_location');
+        if (!fromLoc || !toLoc) { alert('From and To are required'); return; }
+
+        // 1) Create a temporary route name
+        const routeName = `${fromLoc} → ${toLoc} @ ${new Date().toISOString().slice(0,16).replace('T',' ')}`;
+        const f1 = new FormData();
+        f1.append('name', routeName);
+        const r1 = await fetch('/admin/route/add', { method: 'POST', body: f1 });
+        if (!r1.ok) { alert('Failed to create route'); return; }
+
+        // Find created route by name
+        const routesRes = await fetch('/admin/api/routes');
+        const routes = await routesRes.json();
+        const created = routes.find(r => r.name === routeName);
+        if (!created) { alert('Could not find the created route'); return; }
+
+        // 2) Add stops
+        const stops = [];
+        stops.push({ location: fromLoc, type: 'from', authority_id: fd.get('from_authority_id') });
+
+        document.querySelectorAll('#bkStopsContainer .stop-card').forEach((card) => {
+          const loc = card.querySelector('input[name^="stop_location_"]').value;
+          const authSel = card.querySelector('select[name^="stop_authority_id_"]');
+          const auth = authSel ? authSel.value : '';
+          if (loc) stops.push({ location: loc, type: 'intermediate', authority_id: auth });
+        });
+
+        stops.push({ location: toLoc, type: 'to', authority_id: fd.get('to_authority_id') });
+
+        for (let i = 0; i < stops.length; i++) {
+          const sfd = new FormData();
+          sfd.append('location', stops[i].location);
+          sfd.append('type', stops[i].type);
+          sfd.append('order', String(i + 1));
+          if (stops[i].authority_id) sfd.append('authority_id', stops[i].authority_id);
+          const r = await fetch(`/admin/route/${created.id}/stop/add`, { method: 'POST', body: sfd });
+          if (!r.ok) { alert('Failed to add a stop'); return; }
+        }
+
+       // 3) Create letter (booking)
+        const fL = new FormData();
+        fL.append('lorry_id', fd.get('lorry_id'));
+        fL.append('route_id', created.id);
+        const isHome = (fd.get('is_home_depot') || '1');     // '1' or '0'
+        const loadAtHome = (fd.get('load_at_home') || '1');  // '1' or '0'
+        fL.append('is_home_depot', isHome);
+        fL.append('load_at_home', loadAtHome);
+
+        // Compute far end action:
+        // If loading at ELS/ED -> far end action is UNLOAD
+        // If NOT loading at ELS/ED -> far end action is LOAD
+        const farEndAction = loadAtHome === '1' ? 'unload' : 'load';
+        fL.append('far_end_action', farEndAction);
+
+        fL.append('remarks', fd.get('remarks') || '');
+        // placement_date is present in UI; backend may ignore it for now.
+
+
+        const rL = await fetch('/admin/letter/add', { method: 'POST', body: fL });
+        if (!rL.ok) { alert('Failed to create booking'); return; }
+
+        alert('Booking created!');
+        window.location.hash = '#letter';
+        window.location.reload();
+      });
+      
+    // Reset + stay on Route tab
+    alert('Route created with stops!');
+    e.target.reset();
+    document.getElementById('stopsContainer').innerHTML = '';
+    stopCount = 0;
+    window.location.hash = '#route';
+    window.location.reload();
+  });
+</script>
 </body>
 </html>

@@ -1,0 +1,36 @@
+{% macro authority_select(name, authorities, selected_id='') %}
+<select name="{{ name }}" class="form-select">
+  <option value="">Select</option>
+  {% for auth in authorities %}
+    <option value="{{ auth.id }}" {% if auth.id|string == selected_id|string %}selected{% endif %}>
+      {{ auth.location }} - {{ auth.authority }}
+    </option>
+  {% endfor %}
+</select>
+{% endmacro %}
+
+{% macro company_select(name, companies, selected_id='') %}
+<select name="{{ name }}" class="form-select">
+  <option value="">Select Company</option>
+  {% for company in companies %}
+    <option value="{{ company.id }}" {% if company.id|string == selected_id|string %}selected{% endif %}>
+      {{ company.name }}
+    </option>
+  {% endfor %}
+</select>
+{% endmacro %}
+
+{% macro stop_row(index, authorities, location_val='', selected_auth_id='') %}
+<div class="stop-card">
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label">Stop Location</label>
+      <input class="form-control" name="stop_location_{{ index }}" value="{{ location_val }}" placeholder="Location">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Authority</label>
+      {{ authority_select("stop_authority_id_" ~ index, authorities, selected_auth_id) }}
+    </div>
+  </div>
+</div>
+{% endmacro %}

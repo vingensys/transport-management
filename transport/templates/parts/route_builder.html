@@ -1,0 +1,126 @@
+{% import 'admin/macros/ui_macros.html' as ui %}
+
+<!-- Route Builder module -->
+<div class="card mb-4">
+  <div class="card-header bg-warning text-dark">Add Route</div>
+  <div class="card-body">
+    <form id="routeForm" method="POST" action="/admin/route/add">
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <input class="form-control" name="name" placeholder="Route Name" required>
+        </div>
+        <div class="col-md-2">
+          <input type="number" class="form-control" name="total_km" placeholder="Total KM" min="0">
+        </div>
+      </div>
+
+      <!-- FROM -->
+      <div class="stop-card">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">From</label>
+            <input class="form-control" name="from_location" placeholder="From Location" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label d-flex justify-content-between">
+              <span>Authority</span>
+              <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addAuthorityModal">+ Add</button>
+            </label>
+            {{ ui.authority_select('from_authority_id', authorities) }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Intermediate stops container -->
+      <div id="intermediateStops"></div>
+      <button type="button" class="btn btn-sm btn-outline-info my-2" id="addStopBtn">+ Add Stop</button>
+
+      <!-- TO -->
+      <div class="stop-card">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">To</label>
+            <input class="form-control" name="to_location" placeholder="To Location" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label d-flex justify-content-between">
+              <span>Authority</span>
+              <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addAuthorityModal">+ Add</button>
+            </label>
+            {{ ui.authority_select('to_authority_id', authorities) }}
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-success mt-3">Add Route</button>
+    </form>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">Routes</div>
+  <div class="card-body">
+    <table class="table table-bordered table-sm align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Total KM</th>
+          <th>Stops</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for route in routes %}
+        <tr>
+          <td>{{ route.id }}</td>
+          <td>{{ route.name }}</td>
+          <td>{{ route.total_km or '' }}</td>
+          <td>
+            {% for stop in route.stops %}
+              <div>{{ stop.type|capitalize }}: {{ stop.location }}{% if stop.authority %} ({{ stop.authority.authority }}){% endif %}</div>
+            {% endfor %}
+          </td>
+          <td class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editRoute{{ route.id }}">Edit</button>
+          </td>
+        </tr>
+
+        <!-- Edit Route Modal -->
+        <div class="modal fade" id="editRoute{{ route.id }}" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-lg"><div class="modal-content">
+            <form method="POST" action="/admin/route/edit/{{ route.id }}">
+              <div class="modal-header">
+                <h5 class="modal-title">Edit Route</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-2">
+                  <label class="form-label">Name</label>
+                  <input class="form-control" name="name" value="{{ route.name }}" required>
+                </div>
+                <div class="mb-2">
+                  <label class="form-label">Total KM</label>
+                  <input type="number" class="form-control" name="total_km" value="{{ route.total_km }}">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary">Save Changes</button>
+              </div>
+            </form>
+          </div></div>
+        </div>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- hidden source for authority <option> list used by JS -->
+<select id="rbAuthorityOptionsSource" class="d-none">
+  <option value="">Select</option>
+  {% for auth in authorities %}
+    <option value="{{ auth.id }}">{{ auth.location }} - {{ auth.authority }}</option>
+  {% endfor %}
+</select>
